@@ -36,5 +36,10 @@ const spaceParser = str => {
   let match = str.match(re);
   return match ? [match[0], str.replace(re, '')] : null;
 };
+const colonParser = str => {
+  const re = /^:/;
+  let match = str.match(re);
+  return match ? [match[0], str.replace(re, '')] : null;
+};
 // console.log(nullParser(contents));
-console.log(spaceParser(contents));
+console.log(colonParser(contents));
