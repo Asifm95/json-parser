@@ -1,7 +1,7 @@
 // var json = '{"player": "Dexter", "score": 500}';
 let json = '123 is not null, and null is good.';
 let nullJson = 'null 123';
-let numberJson = 'true30e4';
+let numberJson = 'true 30e4';
 let booleanJson = 'true hello';
 function parseJson(json) {
   console.log('Null parser', nullParser(json));
@@ -15,15 +15,14 @@ function nullParser(str) {
 function booleanParser(str) {
   const re = /^true|false/;
   let match = str.match(re);
-  return match
-    ? [match[0] ? true : false, str.replace(/^true|false/, '')]
-    : false;
+  return match ? [match[0] ? true : false, str.replace(re, '')] : false;
 }
 function numberParser(str) {
   const re = /[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/;
   let match = str.match(re);
-  return match[0] ? parseFloat(match[0]) : null;
+  return match[0] ? [parseFloat(match[0]), str.replace(re, '')] : null;
 }
+function stringParser(str) {}
 
 // parseJson(nullJson);
 // parseJson(booleanJson);
