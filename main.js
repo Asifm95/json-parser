@@ -1,12 +1,10 @@
-// var json = '{"player": "Dexter", "score": 500}';
-let json = 'Good morning th\\nis is a test %^&(*%^ string 111222.';
-let nullJson = 'null 123';
-let numberJson = 'true 30e4';
-let booleanJson = 'true hello';
-function parseJson(json) {
-  console.log('Null parser', nullParser(json));
-  console.log('Boolean parser', booleanParser(json));
-}
+var fs = require('fs');
+let contents = fs.readFileSync('input.txt', 'utf8');
+
+// function parseJson(json) {
+//   console.log('Null parser', nullParser(json));
+//   console.log('Boolean parser', booleanParser(json));
+// }
 const nullParser = str => {
   const re = /^null/gi;
   let match = str.match(re);
@@ -28,8 +26,15 @@ const stringParser = str => {
   let slashTest = re.test(str);
   return slashTest ? ['Error'] : str;
 };
-
-// parseJson(nullJson);
-// parseJson(booleanJson);
-// console.log(numberParser(numberJson));
-console.log(stringParser(json));
+const commaParser = str => {
+  const re = /,/;
+  let match = str.match(re);
+  return match ? [match[0], str.replace(re, '')] : null;
+};
+const spaceParser = str => {
+  const re = /\s/;
+  let match = str.match(re);
+  return match ? [match[0], str.replace(re, '')] : null;
+};
+// console.log(nullParser(contents));
+console.log(spaceParser(contents));
