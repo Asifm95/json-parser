@@ -32,7 +32,7 @@ const commaParser = str => {
   return match ? [match[0], str.replace(re, '')] : null;
 };
 const spaceParser = str => {
-  const re = /\s/;
+  const re = /^\s/;
   let match = str.match(re);
   return match ? [match[0], str.replace(re, '')] : null;
 };
@@ -41,5 +41,23 @@ const colonParser = str => {
   let match = str.match(re);
   return match ? [match[0], str.replace(re, '')] : null;
 };
+const arrayParser = () => {};
+const objectParser = () => {};
+parsers = [
+  nullParser,
+  booleanParser,
+  numberParser,
+  stringParser,
+  arrayParser,
+  objectParser,
+  commaParser,
+  colonParser,
+  spaceParser
+];
+let valueParser = function factoryParser(...parsers) {
+  for (let i = 0; i < parsers.length; i++) {
+    parsers[i];
+  }
+};
 // console.log(nullParser(contents));
-console.log(colonParser(contents));
+console.log(valueParser('null'));
