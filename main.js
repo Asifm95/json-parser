@@ -4,7 +4,7 @@ import * as parsers from './src/parsers.js';
 const parseJson = json => {
   // Main parser definition
 };
-const factoryParser = function(parsers) {
+const factoryParser = parsers => {
   for (let i = 0; i < parsers.length; i++) {
     // parsers[i]();
   }
