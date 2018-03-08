@@ -51,6 +51,7 @@ const stringParser = str => {
       );
       return slashTest ? null : [match[0], str.replace(match[0], '')];
     }
+    console.log('In string parser', null);
   } else return null;
 };
 
@@ -73,20 +74,8 @@ const colonParser = str => {
 };
 
 const arrayParser = str => {
-  console.log('In arrayParser', str);
-
-  if (str[0] === '[') {
-    let array = [];
-    let i = 1;
-    while (str[i] !== ']') {
-      if (valueParser(str.slice(1, str.length - 1)) != null) {
-        array.push(valueParser(str.slice(1, str.length - 1)));
-      }
-      i++;
-    }
-    return array;
-  } else {
-    return null;
+  if (str.startsWith('[') && str.endsWith(']')) {
+    console.log('In array parser', str);
   }
 };
 const objectParser = () => {
