@@ -38,21 +38,27 @@ const numberParser = str => {
 };
 
 const stringParser = str => {
-  if (str.startsWith('"') && str.endsWith('"')) {
+  console.log(str[0]);
+
+  if (str[0] === '"') {
     str = str.toString();
     const reQuote = /("([^"]|"")*")/;
     let match = str.match(reQuote);
-    if (match[0] != null) {
+    if (match[0] != undefined) {
       const re = /[\n|"']/;
       let slashTest = re.test(match[0].slice(1, -1));
       console.log(
         'In string parser',
         slashTest ? null : [match[0], str.replace(match[0], '')]
       );
-      return slashTest ? null : [match[0], str.replace(match[0], '')];
+      return slashTest
+        ? null
+        : [match[0].replace(/"/g, ''), str.replace(match[0], '')];
     }
+  } else {
     console.log('In string parser', null);
-  } else return null;
+    return null;
+  }
 };
 
 const commaParser = str => {
@@ -74,9 +80,19 @@ const colonParser = str => {
 };
 
 const arrayParser = str => {
-  if (str.startsWith('[') && str.endsWith(']')) {
-    console.log('In array parser', str);
+  array = [];
+  if (str[0] === '[') {
+    str = str.substring(1);
+    while (str != ']') {
+      let value = valueParser(str);
+      if (value != undefined) {
+        array.push(value[0]);
+        str = value[1];
+      }
+    }
   }
+  console.log('In array parser', array);
+  return array;
 };
 const objectParser = () => {
   return null;
