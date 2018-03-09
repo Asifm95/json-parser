@@ -6,15 +6,17 @@ const parseJson = json => {
 };
 
 const nullParser = str => {
-  const re = /^null/;
-  let match = str.match(re);
-  console.log(
-    'In null parser',
-    str,
-    match ? [null, str.replace(/^null/, '')] : null
-  );
+  if (str && str[0] === 'n') {
+    const re = /^null/;
+    let match = str.match(re);
+    console.log(
+      'In null parser',
+      str,
+      match ? [null, str.replace(/^null/, '')] : null
+    );
 
-  return match ? [null, str.replace(/^null/, '')] : null;
+    return match ? [null, str.replace(/^null/, '')] : null;
+  } else return null;
 };
 
 const booleanParser = str => {
@@ -58,21 +60,32 @@ const stringParser = str => {
 };
 
 const commaParser = str => {
-  const re = /^,/;
-  let match = str.match(re);
-  return match ? [match, str.replace(re, '')] : null;
+  if (str && str[0] === ',') {
+    const re = /^,/;
+    let match = str.match(re);
+    console.log('In array parser', match ? [match, str.replace(re, '')] : null);
+    return match ? [match[0], str.replace(re, '')] : null;
+  } else {
+    return null;
+  }
 };
 
 const spaceParser = str => {
   const re = /^\s*/;
-  let spaceLength = str.match(re)[0].length;
-  console.log(
-    'In space parser',
-    spaceLength > 0 ? [str.slice(0, spaceLength), str.slice(spaceLength)] : null
-  );
-  return spaceLength > 0
-    ? [str.slice(0, spaceLength), str.slice(spaceLength)]
-    : null;
+  if (str && str[0] === ' ') {
+    let spaceLength = str.match(re)[0].length;
+    console.log(
+      'In space parser',
+      spaceLength > 0
+        ? [str.slice(0, spaceLength), str.slice(spaceLength)]
+        : null
+    );
+    return spaceLength > 0
+      ? [str.slice(0, spaceLength), str.slice(spaceLength)]
+      : null;
+  } else {
+    return null;
+  }
 };
 
 const colonParser = str => {
@@ -84,7 +97,7 @@ const colonParser = str => {
 const arrayParser = str => {
   array = [];
   if (str[0] === '[') {
-    str = str.substring(1);
+    str = str.slice(1);
     if (str[0] === '[') {
       for (let i = 0; i < str.length; i++) {
         if (str[i] === '[' && str[i + 1] === ']') {
@@ -101,6 +114,10 @@ const arrayParser = str => {
       let value = valueParser(str);
       if (value != undefined) {
         array.push(value[0]);
+        commaEliminator = commaParser(value[1]);
+        if (commaEliminator && commaEliminator[1]) {
+          str = commaEliminator[1];
+        }
         str = value[1];
       }
     }
@@ -136,3 +153,4 @@ const factoryParser = p => {
 
 let valueParser = factoryParser(parsers);
 parseJson(contents);
+// console.log(commaParser(',"hello"'));
