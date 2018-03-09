@@ -18,13 +18,13 @@ const nullParser = str => {
 };
 
 const booleanParser = str => {
-  const re = /^true|false/;
+  const re = /true|false/;
   let match = str.match(re);
-  console.log(
-    'In boolean parser',
-    match ? [match[0] ? true : false, str.replace(re, '')] : null
-  );
-  return match ? [match[0] ? true : false, str.replace(re, '')] : null;
+  console.log(match);
+
+  return match
+    ? [match[0] === 'true' ? true : false, str.replace(re, '')]
+    : null;
 };
 
 const numberParser = str => {
