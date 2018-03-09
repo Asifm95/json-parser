@@ -20,25 +20,32 @@ const nullParser = str => {
 };
 
 const booleanParser = str => {
-  const re = /true|false/;
-  let match = str.match(re);
-  return match
-    ? [match[0] === 'true' ? true : false, str.replace(re, '')]
-    : null;
+  if (str) {
+    const re = /true|false/;
+    let match = str.match(re);
+    return match
+      ? [match[0] === 'true' ? true : false, str.replace(re, '')]
+      : null;
+  } else {
+    return null;
+  }
 };
 
 const numberParser = str => {
-  const re = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/;
-  let match = str.match(re);
-  console.log(
-    'In number parser',
-    match ? [parseFloat(match[0]), str.replace(re, '')] : null
-  );
-  return match ? [parseFloat(match[0]), str.replace(re, '')] : null;
+  if (str) {
+    const re = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/;
+    let match = str.match(re);
+    console.log(
+      'In number parser',
+      match ? [parseFloat(match[0]), str.replace(re, '')] : null
+    );
+    return match ? [parseFloat(match[0]), str.replace(re, '')] : null;
+  } else {
+  }
 };
 
 const stringParser = str => {
-  if (str[0] === '"') {
+  if (str && str[0] === '"') {
     str = str.toString();
     const reQuote = /("([^"]|"")*")/;
     let match = str.match(reQuote);
@@ -96,7 +103,7 @@ const colonParser = str => {
 
 const arrayParser = str => {
   array = [];
-  if (str[0] === '[') {
+  if (str && str[0] === '[') {
     str = str.slice(1);
     if (str[0] === '[') {
       for (let i = 0; i < str.length; i++) {
@@ -141,6 +148,7 @@ const parsers = [
 const factoryParser = p => {
   let out;
   return function(text) {
+    if (text === null) return null;
     for (let i = 0; i < p.length; i++) {
       out = p[i](text);
       if (out != null) {
