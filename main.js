@@ -1,10 +1,10 @@
-var fs = require('fs');
+let fs = require('fs');
 let contents = fs.readFileSync('input.json', 'utf8');
 
-// function parseJson(json) {
-//   console.log('Null parser', nullParser(json));
-//   console.log('Boolean parser', booleanParser(json));
-// }
+const parseJson = json => {
+  console.log('Parsed value', valueParser(json));
+};
+
 const nullParser = str => {
   const re = /^null/;
   let match = str.match(re);
@@ -20,8 +20,6 @@ const nullParser = str => {
 const booleanParser = str => {
   const re = /true|false/;
   let match = str.match(re);
-  console.log(match);
-
   return match
     ? [match[0] === 'true' ? true : false, str.replace(re, '')]
     : null;
@@ -38,8 +36,6 @@ const numberParser = str => {
 };
 
 const stringParser = str => {
-  console.log(str[0]);
-
   if (str[0] === '"') {
     str = str.toString();
     const reQuote = /("([^"]|"")*")/;
@@ -68,9 +64,15 @@ const commaParser = str => {
 };
 
 const spaceParser = str => {
-  const re = /^\s/;
-  let match = str.match(re);
-  return match ? [match, str.replace(re, '')] : null;
+  const re = /^\s*/;
+  let spaceLength = str.match(re)[0].length;
+  console.log(
+    'In space parser',
+    spaceLength > 0 ? [str.slice(0, spaceLength), str.slice(spaceLength)] : null
+  );
+  return spaceLength > 0
+    ? [str.slice(0, spaceLength), str.slice(spaceLength)]
+    : null;
 };
 
 const colonParser = str => {
@@ -83,7 +85,18 @@ const arrayParser = str => {
   array = [];
   if (str[0] === '[') {
     str = str.substring(1);
+    if (str[0] === '[') {
+      for (let i = 0; i < str.length; i++) {
+        if (str[i] === '[' && str[i + 1] === ']') {
+          array.push([]);
+        }
+      }
+      return array;
+    }
     while (str != ']') {
+      let whiteCatcher = spaceParser(str);
+      console.log('Whitespace', whiteCatcher);
+      str = whiteCatcher[1];
       let value = valueParser(str);
       if (value != undefined) {
         array.push(value[0]);
@@ -107,19 +120,18 @@ const parsers = [
   objectParser
 ];
 
-function factoryParser(p) {
+const factoryParser = p => {
   let out;
   return function(text) {
     for (let i = 0; i < p.length; i++) {
       out = p[i](text);
       if (out != null) {
-        console.log('Factory', out);
         return out;
       }
     }
     return null;
   };
-}
+};
 
 let valueParser = factoryParser(parsers);
-valueParser(contents);
+parseJson(contents);
