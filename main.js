@@ -95,8 +95,9 @@ const arrayParser = str => {
     }
     while (str != ']') {
       let whiteCatcher = spaceParser(str);
-      console.log('Whitespace', whiteCatcher);
-      str = whiteCatcher[1];
+      if (whiteCatcher) {
+        str = whiteCatcher[1];
+      }
       let value = valueParser(str);
       if (value != undefined) {
         array.push(value[0]);
