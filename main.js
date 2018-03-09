@@ -20,9 +20,14 @@ const nullParser = str => {
 };
 
 const booleanParser = str => {
-  if (str) {
-    const re = /true|false/;
+  if (str && (str[0] == 'f' || str[0] == 't')) {
+    const re = /^false|^true/;
     let match = str.match(re);
+    console.log(
+      'bool',
+      match ? [match[0] === 'true' ? true : false, str.replace(re, '')] : null
+    );
+
     return match
       ? [match[0] === 'true' ? true : false, str.replace(re, '')]
       : null;
