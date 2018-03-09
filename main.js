@@ -6,17 +6,10 @@ const parseJson = json => {
 };
 
 const nullParser = str => {
-  if (str && str[0] === 'n') {
-    const re = /^null/;
-    let match = str.match(re);
-    console.log(
-      'In null parser',
-      str,
-      match ? [null, str.replace(/^null/, '')] : null
-    );
-
-    return match ? [null, str.replace(/^null/, '')] : null;
-  } else return null;
+  if (str.startsWith('null')) {
+    return [null, str.slice(4)];
+  }
+  return null;
 };
 
 const booleanParser = str => {
@@ -102,7 +95,6 @@ const spaceParser = str => {
     return null;
   }
 };
-
 const colonParser = str => {
   const re = /^:/;
   let match = str.match(re);
@@ -126,13 +118,13 @@ const arrayParser = str => {
       if (whiteCatcher) {
         str = whiteCatcher[1];
       }
-      let value = valueParser(str);
-      if (value != undefined) {
-        array.push(value[0]);
-        commaEliminator = commaParser(value[1]);
+      let factoryOutput = valueParser(str);
+      if (factoryOutput != undefined) {
+        array.push(factoryOutput[0]);
+        commaEliminator = commaParser(factoryOutput[1]);
         if (commaEliminator && commaEliminator[1]) {
           str = commaEliminator[1];
-        } else str = value[1];
+        } else str = factoryOutput[1];
       }
     }
   }
@@ -153,9 +145,9 @@ const parsers = [
 ];
 
 const factoryParser = p => {
-  let out;
   return function(text) {
     if (text === null) return null;
+    let out;
     for (let i = 0; i < p.length; i++) {
       out = p[i](text);
       if (out != null) {
