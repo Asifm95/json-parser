@@ -70,7 +70,10 @@ const commaParser = str => {
   if (str && str[0] === ',') {
     const re = /^,/;
     let match = str.match(re);
-    console.log('In array parser', match ? [match, str.replace(re, '')] : null);
+    console.log(
+      'In array parser',
+      match ? [match[0], str.replace(re, '')] : null
+    );
     return match ? [match[0], str.replace(re, '')] : null;
   } else {
     return null;
@@ -124,8 +127,7 @@ const arrayParser = str => {
         commaEliminator = commaParser(value[1]);
         if (commaEliminator && commaEliminator[1]) {
           str = commaEliminator[1];
-        }
-        str = value[1];
+        } else str = value[1];
       }
     }
   }
