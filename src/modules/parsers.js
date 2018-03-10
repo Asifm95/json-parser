@@ -9,6 +9,7 @@ const booleanParser = str => {
 }
 
 const numberParser = str => {
+  let match
   return (
     (match = str.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)),
     match ? [parseFloat(match[0]), str.slice(match[0].length)] : null
@@ -16,9 +17,10 @@ const numberParser = str => {
 }
 
 const stringParser = str => {
+  let match
   return str.startsWith('"')
     ? ((match = str.match(/("([^"]|"")*")/)),
-      match[0] != undefined
+      match && match[0] != undefined
         ? /[\n|"']/.test(match[0].slice(1, -1))
           ? null
           : [match[0].replace(/"/g, ''), str.replace(match[0], '')]
@@ -27,12 +29,14 @@ const stringParser = str => {
 }
 
 const commaParser = str => {
+  let match
   return str.startsWith(',')
     ? ((match = str.match(/^,/)), match ? [match[0], str.slice(1)] : null)
     : null
 }
 
 const spaceParser = str => {
+  let spaceLength
   return str.startsWith(' ')
     ? ((spaceLength = str.match(/^\s*/)[0].length),
       spaceLength > 0
@@ -67,6 +71,21 @@ const arrayParser = str => {
 const objectParser = () => {
   return null
 }
+const factoryParser = p => {
+  return text => {
+    if (text === null) return null
+    let out
+    const keys = Object.keys(p)
+    for (let i = 0; i < keys.length; i++) {
+      out = p[keys[i]](text)
+      if (out != null) {
+        return out
+      }
+    }
+    return null
+  }
+}
+
 export const parsers = {
   nullParser,
   booleanParser,
@@ -75,3 +94,4 @@ export const parsers = {
   arrayParser,
   objectParser
 }
+export const valueParser = factoryParser(parsers)
