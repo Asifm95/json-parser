@@ -1,21 +1,21 @@
-export const nullParser = str => {
+const nullParser = str => {
   return str.startsWith('null') ? [null, str.slice(4)] : null
 }
 
-export const booleanParser = str => {
+const booleanParser = str => {
   return str.startsWith('false')
     ? [false, str.slice(5)]
     : str.startsWith('true') ? [true, str.slice(4)] : null
 }
 
-export const numberParser = str => {
+const numberParser = str => {
   return (
     (match = str.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)),
     match ? [parseFloat(match[0]), str.slice(match[0].length)] : null
   )
 }
 
-export const stringParser = str => {
+const stringParser = str => {
   return str.startsWith('"')
     ? ((match = str.match(/("([^"]|"")*")/)),
       match[0] != undefined
@@ -44,7 +44,7 @@ const colonParser = str => {
   return (match = str.match(/^:/)), match ? [match, str.replace(re, '')] : null
 }
 
-export const arrayParser = str => {
+const arrayParser = str => {
   if (str[0] !== '[' && str[0] === ']') return null
   let array = []
   str = str.slice(1)
@@ -64,6 +64,14 @@ export const arrayParser = str => {
   }
   return [array, str.slice(1)]
 }
-export const objectParser = () => {
+const objectParser = () => {
   return null
+}
+export const parsers = {
+  nullParser,
+  booleanParser,
+  numberParser,
+  stringParser,
+  arrayParser,
+  objectParser
 }

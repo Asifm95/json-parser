@@ -1,5 +1,5 @@
 import { contents } from './src/modules/fileReader.js'
-import * as parsers from './src/modules/parsers.js'
+import { parsers } from './src/modules/parsers.js'
 
 const factoryParser = p => {
   return function(text) {
@@ -14,4 +14,4 @@ const factoryParser = p => {
 }
 
 let valueParser = factoryParser(parsers)
-console.log(parsers)
+console.log(valueParser(contents))
