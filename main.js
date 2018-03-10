@@ -13,20 +13,13 @@ const nullParser = str => {
 }
 
 const booleanParser = str => {
-  if (str && (str[0] == 'f' || str[0] == 't')) {
-    const re = /^false|^true/
-    let match = str.match(re)
-    console.log(
-      'bool',
-      match ? [match[0] === 'true' ? true : false, str.replace(re, '')] : null
-    )
-
-    return match
-      ? [match[0] === 'true' ? true : false, str.replace(re, '')]
-      : null
-  } else {
-    return null
+  if (str.startsWith('false')) {
+    return [false, str.slice(5)]
   }
+  if (str.startsWith('true')) {
+    return [true, str.slice(4)]
+  }
+  return null
 }
 
 const numberParser = str => {
@@ -102,14 +95,12 @@ const colonParser = str => {
 }
 
 const arrayParser = str => {
-  if (str[0] !== '[') return null
+  if (str[0] !== '[' && str[0] === ']') return null
   let array = []
   str = str.slice(1)
   while (str[0] !== ']') {
     let whiteCatcher = spaceParser(str)
-    if (whiteCatcher) {
-      str = whiteCatcher[1]
-    }
+    if (whiteCatcher) str = whiteCatcher[1]
     let factoryOutput = valueParser(str)
     if (factoryOutput != null) {
       array.push(factoryOutput[0])
@@ -118,11 +109,13 @@ const arrayParser = str => {
       if (commaEliminator && commaEliminator[1]) {
         str = commaEliminator[1]
       }
+      whiteCatcher = spaceParser(str)
+      if (whiteCatcher) str = whiteCatcher[1]
     }
+    if (str === ']') return array
   }
+  return [array, str.slice(1)]
 }
-console.log('In array parser', array)
-return array
 const objectParser = () => {
   return null
 }
