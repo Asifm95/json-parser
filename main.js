@@ -6,92 +6,49 @@ const parseJson = json => {
 }
 
 const nullParser = str => {
-  if (str.startsWith('null')) {
-    return [null, str.slice(4)]
-  }
-  return null
+  return str.startsWith('null') ? [null, str.slice(4)] : null
 }
 
 const booleanParser = str => {
-  if (str.startsWith('false')) {
-    return [false, str.slice(5)]
-  }
-  if (str.startsWith('true')) {
-    return [true, str.slice(4)]
-  }
-  return null
+  return str.startsWith('false')
+    ? [false, str.slice(5)]
+    : str.startsWith('true') ? [true, str.slice(4)] : null
 }
 
 const numberParser = str => {
-  if (str) {
-    const re = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/
-    let match = str.match(re)
-    console.log(
-      'In number parser',
-      match ? [parseFloat(match[0]), str.replace(re, '')] : null
-    )
-    return match ? [parseFloat(match[0]), str.replace(re, '')] : null
-  } else {
-  }
+  return (
+    (match = str.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)),
+    match ? [parseFloat(match[0]), str.slice(match[0].length)] : null
+  )
 }
 
 const stringParser = str => {
-  if (str && str[0] === '"') {
-    str = str.toString()
-    const reQuote = /("([^"]|"")*")/
-    let match = str.match(reQuote)
-    if (match[0] != undefined) {
-      const re = /[\n|"']/
-      let slashTest = re.test(match[0].slice(1, -1))
-      console.log(
-        'In string parser',
-        slashTest ? null : [match[0], str.replace(match[0], '')]
-      )
-      return slashTest
-        ? null
-        : [match[0].replace(/"/g, ''), str.replace(match[0], '')]
-    }
-  } else {
-    console.log('In string parser', null)
-    return null
-  }
+  return str.startsWith('"')
+    ? ((match = str.match(/("([^"]|"")*")/)),
+      match[0] != undefined
+        ? /[\n|"']/.test(match[0].slice(1, -1))
+          ? null
+          : [match[0].replace(/"/g, ''), str.replace(match[0], '')]
+        : null)
+    : null
 }
 
 const commaParser = str => {
-  if (str && str[0] === ',') {
-    const re = /^,/
-    let match = str.match(re)
-    console.log(
-      'In array parser',
-      match ? [match[0], str.replace(re, '')] : null
-    )
-    return match ? [match[0], str.replace(re, '')] : null
-  } else {
-    return null
-  }
+  return str.startsWith(',')
+    ? ((match = str.match(/^,/)), match ? [match[0], str.slice(1)] : null)
+    : null
 }
 
 const spaceParser = str => {
-  const re = /^\s*/
-  if (str && str[0] === ' ') {
-    let spaceLength = str.match(re)[0].length
-    console.log(
-      'In space parser',
+  return str.startsWith(' ')
+    ? ((spaceLength = str.match(/^\s*/)[0].length),
       spaceLength > 0
         ? [str.slice(0, spaceLength), str.slice(spaceLength)]
-        : null
-    )
-    return spaceLength > 0
-      ? [str.slice(0, spaceLength), str.slice(spaceLength)]
-      : null
-  } else {
-    return null
-  }
+        : null)
+    : null
 }
 const colonParser = str => {
-  const re = /^:/
-  let match = str.match(re)
-  return match ? [match, str.replace(re, '')] : null
+  return (match = str.match(/^:/)), match ? [match, str.replace(re, '')] : null
 }
 
 const arrayParser = str => {
