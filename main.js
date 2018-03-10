@@ -56,19 +56,17 @@ const arrayParser = str => {
   let array = []
   str = str.slice(1)
   while (str[0] !== ']') {
-    let whiteCatcher = spaceParser(str)
-    if (whiteCatcher) str = whiteCatcher[1]
-    let factoryOutput = valueParser(str)
-    if (factoryOutput != null) {
-      array.push(factoryOutput[0])
-      str = factoryOutput[1]
-      commaEliminator = commaParser(factoryOutput[1])
-      if (commaEliminator && commaEliminator[1]) {
-        str = commaEliminator[1]
-      }
-      whiteCatcher = spaceParser(str)
-      if (whiteCatcher) str = whiteCatcher[1]
-    }
+    spaceParser(str) ? (str = spaceParser(str)[1]) : str
+    const factoryOutput = valueParser(str)
+    factoryOutput != null
+      ? (array.push(factoryOutput[0]),
+        (str = factoryOutput[1]),
+        commaParser(factoryOutput[1])
+          ? (str = commaParser(factoryOutput[1])[1])
+          : str,
+        spaceParser(str) ? (str = spaceParser(str)[1]) : str)
+      : null
+
     if (str === ']') return array
   }
   return [array, str.slice(1)]
@@ -102,4 +100,3 @@ const factoryParser = p => {
 
 let valueParser = factoryParser(parsers)
 parseJson(contents)
-// console.log(commaParser(',"hello"'));
