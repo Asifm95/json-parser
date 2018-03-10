@@ -1,6 +1,3 @@
-let fs = require('fs')
-let contents = fs.readFileSync('input.json', 'utf8')
-
 const parseJson = json => {
   console.log('Parsed value', valueParser(json))
 }
@@ -100,3 +97,8 @@ const factoryParser = p => {
 
 let valueParser = factoryParser(parsers)
 parseJson(contents)
+
+import { contents } from './src/fileReader.js';
+import * as parsers from './src/parsers.js';
+
+
