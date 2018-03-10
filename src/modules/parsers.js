@@ -1,3 +1,7 @@
+import { factoryParser } from './factoryParser.js'
+import { colonParser, commaParser, spaceParser } from './subParsers.js'
+import { arrayParser } from './arrayParser.js'
+
 const nullParser = str => {
   return str.startsWith('null') ? [null, str.slice(4)] : null
 }
@@ -27,63 +31,8 @@ const stringParser = str => {
         : null)
     : null
 }
-
-const commaParser = str => {
-  let match
-  return str.startsWith(',')
-    ? ((match = str.match(/^,/)), match ? [match[0], str.slice(1)] : null)
-    : null
-}
-
-const spaceParser = str => {
-  let spaceLength
-  return str.startsWith(' ')
-    ? ((spaceLength = str.match(/^\s*/)[0].length),
-      spaceLength > 0
-        ? [str.slice(0, spaceLength), str.slice(spaceLength)]
-        : null)
-    : null
-}
-const colonParser = str => {
-  return (match = str.match(/^:/)), match ? [match, str.replace(re, '')] : null
-}
-
-const arrayParser = str => {
-  if (str[0] !== '[' && str[0] === ']') return null
-  let array = []
-  str = str.slice(1)
-  while (str[0] !== ']') {
-    spaceParser(str) ? (str = spaceParser(str)[1]) : str
-    const factoryOutput = valueParser(str)
-    factoryOutput != null
-      ? (array.push(factoryOutput[0]),
-        (str = factoryOutput[1]),
-        commaParser(factoryOutput[1])
-          ? (str = commaParser(factoryOutput[1])[1])
-          : str,
-        spaceParser(str) ? (str = spaceParser(str)[1]) : str)
-      : null
-
-    if (str === ']') return array
-  }
-  return [array, str.slice(1)]
-}
 const objectParser = () => {
   return null
-}
-const factoryParser = p => {
-  return text => {
-    if (text === null) return null
-    let out
-    const keys = Object.keys(p)
-    for (let i = 0; i < keys.length; i++) {
-      out = p[keys[i]](text)
-      if (out != null) {
-        return out
-      }
-    }
-    return null
-  }
 }
 
 export const parsers = {
