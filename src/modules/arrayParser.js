@@ -2,7 +2,7 @@ import { spaceParser, commaParser } from './subParsers.js'
 import { valueParser } from './parsers.js'
 
 export const arrayParser = str => {
-  if (str[0] !== '[' && str[0] === ']') return null
+  if (str[0] !== '[') return null
   let array = []
   str = str.slice(1)
   while (str[0] !== ']') {
