@@ -3,8 +3,8 @@ let contents = fs.readFileSync('input.json', 'utf8')
 const util = require('util')
 
 const parseJson = json => {
-  // console.log('Parsed value', valueParser(json))
-  console.log('Stringify', JSON.stringify(valueParser(json)))
+  console.log('Parsed value', valueParser(json)[0])
+  // console.log('Stringify', JSON.stringify(valueParser(json)))
 }
 
 const nullParser = str => {
@@ -45,7 +45,7 @@ const commaParser = str => {
 }
 
 const spaceParser = str => {
-  return str.startsWith(' ')
+  return str.startsWith(' ') || str.startsWith('\n')
     ? ((spaceLength = str.match(/^\s*/)[0].length),
       spaceLength > 0
         ? [str.slice(0, spaceLength), str.slice(spaceLength)]
@@ -93,6 +93,7 @@ const objectParser = str => {
         let value = valueParser(str)
         object[key] = value[0]
         str = value[1]
+        commaParser(str) ? (str = commaParser(str)[1]) : str
       }
     }
     if (str === '}') break
