@@ -1,8 +1,10 @@
 let fs = require('fs')
 let contents = fs.readFileSync('input.json', 'utf8')
+const util = require('util')
 
 const parseJson = json => {
-  console.log('Parsed value', valueParser(json))
+  // console.log('Parsed value', valueParser(json))
+  console.log('Stringify', JSON.stringify(valueParser(json)))
 }
 
 const nullParser = str => {
@@ -55,7 +57,7 @@ const colonParser = str => {
 }
 
 const arrayParser = str => {
-  if (str[0] !== '[' && str[0] === ']') return null
+  if (str[0] !== '[') return null
   let array = []
   str = str.slice(1)
   while (str[0] !== ']') {
@@ -83,10 +85,10 @@ const objectParser = str => {
     const factoryOutput = stringParser(str)
     if (factoryOutput) {
       let key = factoryOutput[0]
-      if (factoryOutput[1].startsWith(':')) {
-        colonParser(factoryOutput[1])
-          ? (str = colonParser(factoryOutput[1])[1])
-          : str
+      if (factoryOutput[1]) {
+        str = factoryOutput[1]
+        spaceParser(str) ? (str = spaceParser(str)[1]) : str
+        colonParser(str) ? (str = colonParser(str)[1]) : str
         spaceParser(str) ? (str = spaceParser(str)[1]) : str
         let value = valueParser(str)
         object[key] = value[0]
@@ -123,4 +125,4 @@ const factoryParser = p => {
 
 let valueParser = factoryParser(parsers)
 parseJson(contents)
-// console.log(objectParser(contents))
+//console.log(objectParser('"points": null}]'))
