@@ -16,10 +16,13 @@ const booleanParser = str => {
 }
 
 const numberParser = str => {
-  return (
-    (match = str.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)),
-    match ? [parseFloat(match[0]), str.slice(match[0].length)] : null
-  )
+  spaceParser(str) ? (str = spaceParser(str)[1]) : str
+  if (str && isFinite(str[0])) {
+    return (
+      (match = str.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)),
+      match ? [parseFloat(match[0]), str.slice(match[0].length)] : null
+    )
+  } else return null
 }
 
 const stringParser = str => {
@@ -48,7 +51,7 @@ const spaceParser = str => {
     : null
 }
 const colonParser = str => {
-  return (match = str.match(/^:/)), match ? [match, str.replace(re, '')] : null
+  return (match = str.match(/^:/)), match ? [match, str.slice(1)] : null
 }
 
 const arrayParser = str => {
@@ -71,8 +74,28 @@ const arrayParser = str => {
   }
   return [array, str.slice(1)]
 }
-const objectParser = () => {
-  return null
+const objectParser = str => {
+  if (str[0] !== '{') return null
+  let object = {}
+  str = str.slice(1)
+  while (str[0] != '}') {
+    spaceParser(str) ? (str = spaceParser(str)[1]) : str
+    const factoryOutput = stringParser(str)
+    if (factoryOutput) {
+      let key = factoryOutput[0]
+      if (factoryOutput[1].startsWith(':')) {
+        colonParser(factoryOutput[1])
+          ? (str = colonParser(factoryOutput[1])[1])
+          : str
+        spaceParser(str) ? (str = spaceParser(str)[1]) : str
+        let value = valueParser(str)
+        object[key] = value[0]
+        str = value[1]
+      }
+    }
+    if (str === '}') break
+  }
+  return [object, str.slice(1)]
 }
 
 const parsers = [
@@ -100,3 +123,4 @@ const factoryParser = p => {
 
 let valueParser = factoryParser(parsers)
 parseJson(contents)
+// console.log(objectParser(contents))
