@@ -4,9 +4,8 @@ const util = require('util')
 
 const parseJson = json => {
   parsed = valueParser(json)[0]
-  console.log(parsed)
-
-  // console.log('Stringify', JSON.stringify(valueParser(json)))
+  // console.log(parsed)
+  console.log('Parsed:', JSON.stringify(valueParser(json), true, 4))
 }
 
 const nullParser = str => {
@@ -30,19 +29,15 @@ const numberParser = str => {
 }
 
 const stringParser = str => {
-  return str && str.startsWith('"')
+  return str.startsWith('"')
     ? ((match = str.match(/("([^"]|"")*")/)),
-      match && match[0] != undefined
+      match[0] != undefined
         ? /[\n|"']/.test(match[0].slice(1, -1))
-          ? [
-              match[0].replace(/('[^']*)'s([^']*')/, "'"),
-              str.replace(match[0], '')
-            ]
-          : [match[0], str.replace(match[0], '')]
+          ? [match[0].slice(1, -1).replace(/"/g, ''), str.replace(match[0], '')]
+          : [match[0].slice(1, -1), str.replace(match[0], '')]
         : null)
     : null
 }
-
 const commaParser = str => {
   return str && str.startsWith(',')
     ? ((match = str.match(/^,/)), match ? [match[0], str.slice(1)] : null)
@@ -144,7 +139,5 @@ const factoryParser = p => {
 
 let valueParser = factoryParser(parsers)
 let serialize = contents.replace(/(\n\t|\n|\r\t)/gm, '')
-console.log(serialize)
-
-parseJson(contents)
+parseJson(serialize)
 // console.log(stringParser(serialize))
