@@ -20,12 +20,10 @@ const booleanParser = str => {
 
 const numberParser = str => {
   spaceParser(str) ? (str = spaceParser(str)[1]) : str
-  if (str && isFinite(str[0])) {
-    return (
-      (match = str.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)),
-      match ? [parseFloat(match[0]), str.slice(match[0].length)] : null
-    )
-  } else return null
+  return (
+    (match = str.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)),
+    match ? [parseFloat(match[0]), str.slice(match[0].length)] : null
+  )
 }
 
 const stringParser = str => {
