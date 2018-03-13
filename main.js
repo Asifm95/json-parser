@@ -143,8 +143,8 @@ const factoryParser = p => {
 }
 
 let valueParser = factoryParser(parsers)
-let serialize = contents.replace(/(\r\n\t|\n|\r\t)/gm, '')
-// console.log(serialize)
+let serialize = contents.replace(/(\n\t|\n|\r\t)/gm, '')
+console.log(serialize)
 
-parseJson(serialize)
+parseJson(contents)
 // console.log(stringParser(serialize))
