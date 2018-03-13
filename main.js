@@ -3,7 +3,9 @@ let contents = fs.readFileSync('input.json', 'utf8')
 const util = require('util')
 
 const parseJson = json => {
-  console.log('Parsed value', valueParser(json)[0])
+  parsed = valueParser(json)[0]
+  console.log(parsed)
+
   // console.log('Stringify', JSON.stringify(valueParser(json)))
 }
 
@@ -32,8 +34,11 @@ const stringParser = str => {
     ? ((match = str.match(/("([^"]|"")*")/)),
       match && match[0] != undefined
         ? /[\n|"']/.test(match[0].slice(1, -1))
-          ? null
-          : [match[0].replace(/"/g, ''), str.replace(match[0], '')]
+          ? [
+              match[0].replace(/('[^']*)'s([^']*')/, "'"),
+              str.replace(match[0], '')
+            ]
+          : [match[0], str.replace(match[0], '')]
         : null)
     : null
 }
@@ -142,4 +147,4 @@ let serialize = contents.replace(/(\r\n\t|\n|\r\t)/gm, '')
 // console.log(serialize)
 
 parseJson(serialize)
-// console.log(arrayParser('[{"points": null}]'))
+// console.log(stringParser(serialize))
