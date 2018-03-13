@@ -8,13 +8,13 @@ const parseJson = json => {
 }
 
 const nullParser = str => {
-  return str.startsWith('null') ? [null, str.slice(4)] : null
+  return str && str.startsWith('null') ? [null, str.slice(4)] : null
 }
 
 const booleanParser = str => {
-  return str.startsWith('false')
+  return str != undefined && str.startsWith('false')
     ? [false, str.slice(5)]
-    : str.startsWith('true') ? [true, str.slice(4)] : null
+    : str && str.startsWith('true') ? [true, str.slice(4)] : null
 }
 
 const numberParser = str => {
@@ -28,9 +28,9 @@ const numberParser = str => {
 }
 
 const stringParser = str => {
-  return str.startsWith('"')
+  return str && str.startsWith('"')
     ? ((match = str.match(/("([^"]|"")*")/)),
-      match[0] != undefined
+      match && match[0] != undefined
         ? /[\n|"']/.test(match[0].slice(1, -1))
           ? null
           : [match[0].replace(/"/g, ''), str.replace(match[0], '')]
@@ -39,17 +39,15 @@ const stringParser = str => {
 }
 
 const commaParser = str => {
-  return str.startsWith(',')
+  return str && str.startsWith(',')
     ? ((match = str.match(/^,/)), match ? [match[0], str.slice(1)] : null)
     : null
 }
 
 const spaceParser = str => {
-  return str.startsWith(' ') || str.startsWith('\n')
-    ? ((spaceLength = str.match(/^\s*/)[0].length),
-      spaceLength > 0
-        ? [str.slice(0, spaceLength), str.slice(spaceLength)]
-        : null)
+  return (str && str.startsWith(' ')) || (str && str.startsWith('\n'))
+    ? ((match = str.match(/^\s+|\s+$/)),
+      match && match[0] ? [match[0], str.replace(/^\s+|\s+$/, '')] : null)
     : null
 }
 const colonParser = str => {
@@ -57,7 +55,9 @@ const colonParser = str => {
 }
 
 const arrayParser = str => {
-  if (str[0] !== '[') return null
+  if (str != undefined && !str.startsWith('[')) {
+    return null
+  }
   let array = []
   str = str.slice(1)
   while (str[0] !== ']') {
@@ -78,18 +78,31 @@ const arrayParser = str => {
 }
 const objectParser = str => {
   if (str[0] !== '{') return null
+  if (str.match(/\,(?!\s*[\{\"\w])/g)) {
+    throw SyntaxError('Invalid JSON')
+  }
   let object = {}
   str = str.slice(1)
-  while (str[0] != '}') {
+  if (str.startsWith(' ') || str.startsWith('\n')) {
     spaceParser(str) ? (str = spaceParser(str)[1]) : str
+  }
+  // if (!str.startsWith('"')) {
+  //   throw SyntaxError('Invalid JSON')
+  // }
+  while (str[0] != '}') {
+    str.startsWith(' ') && spaceParser(str) ? (str = spaceParser(str)[1]) : str
     const factoryOutput = stringParser(str)
     if (factoryOutput) {
       let key = factoryOutput[0]
       if (factoryOutput[1]) {
         str = factoryOutput[1]
-        spaceParser(str) ? (str = spaceParser(str)[1]) : str
+        str.startsWith(' ') && spaceParser(str)
+          ? (str = spaceParser(str)[1])
+          : str
         colonParser(str) ? (str = colonParser(str)[1]) : str
-        spaceParser(str) ? (str = spaceParser(str)[1]) : str
+        str.startsWith(' ') && spaceParser(str)
+          ? (str = spaceParser(str)[1])
+          : str
         let value = valueParser(str)
         object[key] = value[0]
         str = value[1]
@@ -125,5 +138,8 @@ const factoryParser = p => {
 }
 
 let valueParser = factoryParser(parsers)
-parseJson(contents)
-//console.log(objectParser('"points": null}]'))
+let serialize = contents.replace(/(\r\n\t|\n|\r\t)/gm, '')
+// console.log(serialize)
+
+parseJson(serialize)
+// console.log(arrayParser('[{"points": null}]'))
