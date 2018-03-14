@@ -13,6 +13,7 @@ const booleanParser = str => {
 }
 
 const numberParser = str => {
+  let match
   spaceParser(str) ? (str = spaceParser(str)[1]) : str
   return (
     (match = str.match(/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/)),
@@ -21,6 +22,7 @@ const numberParser = str => {
 }
 
 const stringParser = str => {
+  let match
   return str.startsWith('"')
     ? ((match = str.match(/^"(?:\\"|.)*?"/)),
       match[0] != undefined
@@ -56,6 +58,7 @@ const objectParser = str => {
   }
   while (str[0] != '}') {
     str.startsWith(' ') && spaceParser(str) ? (str = spaceParser(str)[1]) : str
+    let factoryOutput
     factoryOutput = stringParser(str)
 
     if (factoryOutput) {
