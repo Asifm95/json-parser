@@ -28,7 +28,7 @@ const numberParser = str => {
 
 const stringParser = str => {
   return str.startsWith('"')
-    ? ((match = str.match(/("([^"]|"")*")/)),
+    ? ((match = str.match(/^"(?:\\"|.)*?"/)),
       match[0] != undefined
         ? /[\n|"']/.test(match[0].slice(1, -1))
           ? [match[0].slice(1, -1).replace(/"/g, ''), str.replace(match[0], '')]
@@ -84,9 +84,6 @@ const objectParser = str => {
   if (str.startsWith(' ') || str.startsWith('\n')) {
     spaceParser(str) ? (str = spaceParser(str)[1]) : str
   }
-  // if (!str.startsWith('"')) {
-  //   throw SyntaxError('Invalid JSON')
-  // }
   while (str[0] != '}') {
     str.startsWith(' ') && spaceParser(str) ? (str = spaceParser(str)[1]) : str
     const factoryOutput = stringParser(str)
