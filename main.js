@@ -3,10 +3,12 @@ let contents = fs.readFileSync('input.json', 'utf8')
 
 const parseJson = json => {
   const parsed = valueParser(json)
-  const test = /[^ ]+$/.test(parsed[1])
-  test
-    ? console.log('Invalid JSON')
-    : console.log(JSON.stringify(parsed[0], true, 4))
+  if (parsed) {
+    const test = /[^ ]+$/.test(parsed[1])
+    test
+      ? console.log('Invalid JSON')
+      : console.log(JSON.stringify(parsed[0], true, 10))
+  }
 }
 
 const nullParser = str => {
@@ -31,12 +33,26 @@ const stringParser = str => {
   return str.startsWith('"')
     ? ((match = str.match(/^"(?:\\"|.)*?"/)),
       match[0] != undefined
-        ? /[\n|"']/.test(match[0].slice(1, -1))
-          ? [match[0].slice(1, -1).replace(/"/g, ''), str.replace(match[0], '')]
-          : [match[0].slice(1, -1), str.replace(match[0], '')]
+        ? [stringEnhancer(match[0].slice(1, -1)), str.replace(match[0], '')]
         : null)
     : null
 }
+const stringEnhancer = str => {
+  for (const key in regexTable) {
+    str = str.replace(new RegExp(key, 'g'), regexTable[key])
+  }
+  return str
+}
+const regexTable = {
+  '/\\\\/': '\\',
+  '/\\//': '/',
+  '/\\b/': '\b',
+  '/\\f/': '\f',
+  '/\\n/': '\n',
+  '/\\r/': '\r',
+  '/\\t/': '\t'
+}
+
 const commaParser = str => {
   return str && str.startsWith(',')
     ? ((match = str.match(/^,/)), match ? [match[0], str.slice(1)] : null)
@@ -77,9 +93,9 @@ const arrayParser = str => {
 }
 const objectParser = str => {
   if (str[0] !== '{') return null
-  if (str.match(/\,(?!\s*[\{\"\w])/g)) {
-    throw SyntaxError('Invalid JSON')
-  }
+  // if (str.match(/\,(?!\s*[\{\"\w])/g)) {
+  //   throw SyntaxError('Invalid JSON')
+  // }
   let object = {}
   str = str.slice(1)
   if (str.startsWith(' ') || str.startsWith('\n') || str.startsWith('\t')) {
@@ -125,7 +141,11 @@ const factoryParser = p => {
     if (text === null) return null
     let out
     for (let i = 0; i < p.length; i++) {
-      out = p[i](text)
+      try {
+        out = p[i](text)
+      } catch (error) {
+        console.log(error)
+      }
       if (out != null) {
         return out
       }
@@ -137,4 +157,4 @@ const factoryParser = p => {
 let valueParser = factoryParser(parsers)
 let serialize = contents.replace(/\s(?=("[^"]*"|[^"])*$)/gm, '')
 parseJson(serialize)
-// console.log(stringParser(serialize))
+// console.log(stringParser('hello'))
