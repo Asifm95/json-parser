@@ -1,10 +1,13 @@
 export const factoryParser = p => {
-  return text => {
+  return function(text) {
     if (text === null) return null
     let out
-    const keys = Object.keys(p)
-    for (let i = 0; i < keys.length; i++) {
-      out = p[keys[i]](text)
+    for (let i = 0; i < p.length; i++) {
+      try {
+        out = p[i](text)
+      } catch (error) {
+        console.log(error)
+      }
       if (out != null) {
         return out
       }

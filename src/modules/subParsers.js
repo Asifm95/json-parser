@@ -1,19 +1,15 @@
 export const commaParser = str => {
-  let match
-  return str.startsWith(',')
+  return str && str.startsWith(',')
     ? ((match = str.match(/^,/)), match ? [match[0], str.slice(1)] : null)
     : null
 }
 
 export const spaceParser = str => {
-  let spaceLength
-  return str.startsWith(' ')
-    ? ((spaceLength = str.match(/^\s*/)[0].length),
-      spaceLength > 0
-        ? [str.slice(0, spaceLength), str.slice(spaceLength)]
-        : null)
+  return (str && str.startsWith(' ')) || (str && str.startsWith('\n'))
+    ? ((match = str.match(/^\s+|\s+$/)),
+      match && match[0] ? [match[0], str.replace(/^\s+|\s+$/, '')] : null)
     : null
 }
 export const colonParser = str => {
-  return (match = str.match(/^:/)), match ? [match, str.replace(re, '')] : null
+  return (match = str.match(/^:/)), match ? [match, str.slice(1)] : null
 }
