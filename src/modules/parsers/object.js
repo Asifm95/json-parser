@@ -3,12 +3,13 @@ import { stringx } from './string.js'
 import { colon } from './colon.js'
 import { comma } from './comma.js'
 import { valueParser } from '../parsers.js'
+import { commaErrRe } from '../regex/rgx.js'
 
 export const object = str => {
   if (str[0] !== '{') return null
-  // if (str.match(/\,(?!\s*[\{\"\w])/g)) {
-  //   throw SyntaxError('Invalid JSON')
-  // }
+  if (str.match(commaErrRe)) {
+    throw SyntaxError('Invalid JSON')
+  }
   let object = {}
   str = str.slice(1)
   if (str.startsWith(' ') || str.startsWith('\n') || str.startsWith('\t')) {

@@ -1,7 +1,9 @@
+import { stringRe, regexTable } from '../regex/rgx.js'
+
 export const stringx = str => {
   let match
   return str.startsWith('"')
-    ? ((match = str.match(/^"(?:\\"|.)*?"/)),
+    ? ((match = str.match(stringRe)),
       match[0] != undefined
         ? [stringEnhancer(match[0].slice(1, -1)), str.replace(match[0], '')]
         : null)
@@ -12,13 +14,4 @@ const stringEnhancer = str => {
     str = str.replace(new RegExp(key, 'g'), regexTable[key])
   }
   return str
-}
-const regexTable = {
-  '/\\\\/': '\\',
-  '/\\//': '/',
-  '/\\b/': '\b',
-  '/\\f/': '\f',
-  '/\\n/': '\n',
-  '/\\r/': '\r',
-  '/\\t/': '\t'
 }
