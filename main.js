@@ -1,5 +1,5 @@
-let fs = require('fs')
-let contents = fs.readFileSync('input.json', 'utf8')
+import { contents } from './src/modules/fileReader.js'
+import { parsers, valueParser } from './src/modules/parsers.js'
 
 const parseJson = json => {
   const parsed = valueParser(json)
@@ -158,3 +158,4 @@ let valueParser = factoryParser(parsers)
 let serialize = contents.replace(/\s(?=("[^"]*"|[^"])*$)/gm, '')
 parseJson(serialize)
 // console.log(stringParser('hello'))
+// console.log(valueParser(contents))
