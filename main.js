@@ -1,11 +1,12 @@
 let fs = require('fs')
 let contents = fs.readFileSync('input.json', 'utf8')
-const util = require('util')
 
 const parseJson = json => {
-  parsed = valueParser(json)[0]
-  // console.log(parsed)
-  console.log('Parsed:', JSON.stringify(valueParser(json), true, 4))
+  const parsed = valueParser(json)
+  const test = /[^ ]+$/.test(parsed[1])
+  test
+    ? console.log('Invalid JSON')
+    : console.log(JSON.stringify(parsed[0], true, 4))
 }
 
 const nullParser = str => {
@@ -81,12 +82,13 @@ const objectParser = str => {
   }
   let object = {}
   str = str.slice(1)
-  if (str.startsWith(' ') || str.startsWith('\n')) {
+  if (str.startsWith(' ') || str.startsWith('\n') || str.startsWith('\t')) {
     spaceParser(str) ? (str = spaceParser(str)[1]) : str
   }
   while (str[0] != '}') {
     str.startsWith(' ') && spaceParser(str) ? (str = spaceParser(str)[1]) : str
-    const factoryOutput = stringParser(str)
+    factoryOutput = stringParser(str)
+
     if (factoryOutput) {
       let key = factoryOutput[0]
       if (factoryOutput[1]) {
@@ -133,6 +135,6 @@ const factoryParser = p => {
 }
 
 let valueParser = factoryParser(parsers)
-let serialize = contents.replace(/(\n\t|\n|\r\t)/gm, '')
+let serialize = contents.replace(/\s(?=("[^"]*"|[^"])*$)/gm, '')
 parseJson(serialize)
 // console.log(stringParser(serialize))
