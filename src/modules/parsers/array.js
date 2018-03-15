@@ -27,7 +27,7 @@ export const array = str => {
       comma(factoryOut[1]) ? (str = comma(factoryOut[1])[1]) : str
       space(str) ? (str = space(str)[1]) : str
     }
-
+    if (!str.includes(']')) throw Error('Expected comma or closing brace')
     if (str === ']') return [array, str.slice(1)]
   }
   return [array, str.slice(1)]
