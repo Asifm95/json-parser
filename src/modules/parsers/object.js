@@ -9,6 +9,8 @@ export const object = str => {
   space(str) ? (str = space(str)[1]) : str
   if (str[0] !== '{') return null
   if (str.match(commaErrRe)) {
+    console.log('Match', str.match(commaErrRe))
+
     console.log(`\x1b[31m${'Message: Property expected'}\x1b[0m`)
     throw SyntaxError('Invalid JSON')
   }
