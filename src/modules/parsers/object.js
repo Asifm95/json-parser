@@ -8,6 +8,7 @@ import { commaErrRe, validateRe } from '../regex/rgx.js'
 export const object = str => {
   if (str[0] !== '{') return null
   if (str.match(commaErrRe)) {
+    console.log(`\x1b[31m${'Message: Unexpected comma'}\x1b[0m`)
     throw SyntaxError('Invalid JSON')
   }
   let object = {}
@@ -22,17 +23,17 @@ export const object = str => {
 
     let factory
     factory = stringx(str)
+    space(str) ? (str = space(str)[1]) : str
+    if (!factory[1].startsWith(':')) {
+      console.log(`\x1b[31m${'Message: Expected colon'}\x1b[0m`)
+      throw new Error('Invalid JSON')
+    }
     if (factory) {
       let key = factory[0]
       if (factory[1]) {
         str = factory[1]
-        space(str) ? (str = space(str)[1]) : str
-        if (!str.startsWith(':')) {
-          console.log('\x1b[31m%s\x1b[0m', 'Message: Expected colon')
-          throw new Error('Invalid JSON')
-        }
         colon(str) ? (str = colon(str)[1]) : str
-        str.startsWith(' ') && space(str) ? (str = space(str)[1]) : str
+        space(str) ? (str = space(str)[1]) : str
 
         if (valueParser(str) === null) {
           console.log(
