@@ -6,6 +6,7 @@ import { valueParser } from '../parsers.js'
 import { commaErrRe, validateRe } from '../regex/rgx.js'
 
 export const object = str => {
+  space(str) ? (str = space(str)[1]) : str
   if (str[0] !== '{') return null
   if (str.match(commaErrRe)) {
     console.log(`\x1b[31m${'Message: Property expected'}\x1b[0m`)
@@ -13,9 +14,7 @@ export const object = str => {
   }
   let object = {}
   str = str.slice(1)
-  if (str.startsWith(' ') || str.startsWith('\n') || str.startsWith('\t')) {
-    space(str) ? (str = space(str)[1]) : str
-  }
+  space(str) ? (str = space(str)[1]) : str
   while (str[0] != '}') {
     space(str) ? (str = space(str)[1]) : str
     if (!str.startsWith('"'))
@@ -46,6 +45,7 @@ export const object = str => {
         object[key] = value[0]
         str = value[1]
         comma(str) ? (str = comma(str)[1]) : str
+        space(str) ? (str = space(str)[1]) : str
       }
     }
     if (str === '}') break
