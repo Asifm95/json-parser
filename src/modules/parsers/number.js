@@ -1,5 +1,6 @@
 import { space } from './space.js'
 import { numRe } from '../regex/rgx.js'
+
 export const number = str => {
   let match
   space(str) ? (str = space(str)[1]) : str

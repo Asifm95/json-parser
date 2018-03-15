@@ -3,48 +3,37 @@ import { stringx } from './string.js'
 import { colon } from './colon.js'
 import { comma } from './comma.js'
 import { valueParser } from '../parsers.js'
-import { commaErrRe, validateRe } from '../regex/rgx.js'
+
+import {
+  syntaxCheck1,
+  syntaxCheck2,
+  syntaxCheck3,
+  syntaxCheck4
+} from '../exceptionHandlers/errors.js'
 
 export const object = str => {
   space(str) ? (str = space(str)[1]) : str
   if (str[0] !== '{') return null
-  if (str.match(commaErrRe)) {
-    console.log(`\x1b[31m${'Message: Property expected'}\x1b[0m`)
-    throw SyntaxError('Invalid JSON')
-  }
+  syntaxCheck1(str)
   let object = {}
   str = str.slice(1)
   space(str) ? (str = space(str)[1]) : str
   while (str[0] != '}') {
     space(str) ? (str = space(str)[1]) : str
-    if (!str.startsWith('"'))
-      throw new Error(`\x1b[31m${'Invalid JSON'}\x1b[0m`)
-
+    syntaxCheck2(str)
     let factory
     try {
       factory = stringx(str)
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
     space(str) ? (str = space(str)[1]) : str
-    if (!factory[1].startsWith(':')) {
-      console.log(`\x1b[31m${'Message: Expected colon'}\x1b[0m`)
-      throw new Error('Invalid JSON')
-    }
+    syntaxCheck3(factory)
     if (factory) {
       let key = factory[0]
       if (factory[1]) {
         str = factory[1]
         colon(str) ? (str = colon(str)[1]) : str
         space(str) ? (str = space(str)[1]) : str
-
-        if (valueParser(str) === null) {
-          console.log(
-            '\x1b[31m%s\x1b[0m',
-            'Message: Must contain a value after colon'
-          )
-          throw new Error('Invalid JSON')
-        }
+        syntaxCheck4(valueParser(str))
         let value = valueParser(str)
         object[key] = value[0]
         str = value[1]

@@ -1,5 +1,6 @@
 import fs from 'fs'
-import { serializer } from './util.js'
+// import { serializer } from './util.js'
 
 const reader = fs.readFileSync('./src/assets/input.json', 'utf8')
 export const data = reader
+console.log(data)
