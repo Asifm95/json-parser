@@ -119,6 +119,51 @@ Extracts valid string from the text.
 ### Object parser
 
 ### Folder Strucuture
+```
+
+├── main.js  (Initial hit)
+├── package.json
+├── README.md
+└── src
+    ├── assets                 (Contains mock json files )
+    │   ├── bufferapp.json
+    │   ├── choco.json
+    │   ├── color-codes.json
+    │   ├── gofundme.json
+    │   ├── google-maps.json
+    │   ├── grocery-list.json
+    │   ├── input.json
+    │   ├── ip.json
+    │   ├── konfabulator-widget.json
+    │   ├── nfl-lookout.json
+    │   ├── reddit.json
+    │   ├── twitter-sample.json
+    │   └── youtube.json
+    ├── core
+    │   └── custom-loader.mjs  (Custom loader for esm)
+    └── modules
+        ├── exceptionHandlers  (Error handlers)
+        │   └── errors.js
+        ├── factory
+        │   └── factory.js     (Factory function)
+        ├── fileReader.js
+        ├── parsers            (All parsers)
+        │   ├── array.js
+        │   ├── boolean.js
+        │   ├── colon.js
+        │   ├── comma.js
+        │   ├── null.js
+        │   ├── number.js
+        │   ├── object.js
+        │   ├── space.js
+        │   └── string.js
+        ├── parsers.js        (Composing parsers together)
+        ├── regex
+        │   └── rgx.js        (All regex patterns)
+        └── util.js           (String serializer for test purpose)
+
+
+```
 
 ### Licence
 
