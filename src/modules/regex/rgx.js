@@ -14,3 +14,4 @@ export const regexTable = {
   '/\\t/': '\t'
 }
 export const serializeRe = /\s(?=("[^"]*"|[^"])*$)/gm
+export const validateRe = /[^ ]+$/
