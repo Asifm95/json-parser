@@ -31,14 +31,16 @@ export const syntaxCheck4 = value => {
 }
 export const commaCheck = str => {
   if (isFinite(str[0]) && str[1] === ' ') {
-    throw Error('Expected comma')
+    console.log('\x1b[31m%s\x1b[0m', 'Message: Expected comma')
+    throw SyntaxError('Invalid JSON')
   }
 }
 export const trailCheck = str => {
   if (str[0] === ',') {
     space(str.slice(1)) ? (str = space(str.slice(1))[1]) : str
     if (str[0] === ']') {
-      throw Error('Trailing comma')
+      console.log('\x1b[31m%s\x1b[0m', 'Message: Trailing comma')
+      throw SyntaxError('Invalid JSON')
     }
   }
   return str
