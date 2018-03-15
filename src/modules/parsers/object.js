@@ -8,7 +8,7 @@ import { commaErrRe, validateRe } from '../regex/rgx.js'
 export const object = str => {
   if (str[0] !== '{') return null
   if (str.match(commaErrRe)) {
-    console.log(`\x1b[31m${'Message: Unexpected comma'}\x1b[0m`)
+    console.log(`\x1b[31m${'Message: Property expected'}\x1b[0m`)
     throw SyntaxError('Invalid JSON')
   }
   let object = {}

@@ -9,5 +9,5 @@ if (result) {
   const test = validateRe.test(result[1])
   test
     ? console.log(`\x1b[31m${'Invalid JSON'}\x1b[0m`)
-    : console.log('\x1b[32m%s\x1b[0m', JSON.stringify(result[0], true, 10))
+    : console.log('\x1b[32m%s\x1b[0m', JSON.stringify(result[0], true, 4))
 }
