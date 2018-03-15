@@ -21,7 +21,11 @@ export const object = str => {
       throw new Error(`\x1b[31m${'Invalid JSON'}\x1b[0m`)
 
     let factory
-    factory = stringx(str)
+    try {
+      factory = stringx(str)
+    } catch (error) {
+      console.log(error)
+    }
     space(str) ? (str = space(str)[1]) : str
     if (!factory[1].startsWith(':')) {
       console.log(`\x1b[31m${'Message: Expected colon'}\x1b[0m`)

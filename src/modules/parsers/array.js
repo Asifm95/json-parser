@@ -14,7 +14,11 @@ export const array = str => {
     if (isFinite(str[0]) && str[1] === ' ') {
       throw Error('Expected comma')
     }
-    const factoryOut = valueParser(str)
+    try {
+      const factoryOut = valueParser(str)
+    } catch (error) {
+      console.log(error)
+    }
     if (factoryOut) {
       array.push(factoryOut[0])
       str = factoryOut[1]
