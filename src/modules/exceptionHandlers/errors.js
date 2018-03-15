@@ -1,4 +1,5 @@
 import { commaErrRe } from '../regex/rgx.js'
+import { space } from '../parsers/space.js'
 
 export const syntaxCheck1 = str => {
   if (str.match(commaErrRe)) {
@@ -11,11 +12,12 @@ export const syntaxCheck2 = str => {
   if (!str.startsWith('"'))
     throw SyntaxError(`\x1b[31m${'Invalid JSON'}\x1b[0m`)
 }
-export const syntaxCheck3 = factory => {
-  if (!factory[1].startsWith(':')) {
+export const syntaxCheck3 = str => {
+  if (!str.startsWith(':')) {
     console.log(`\x1b[31m${'Message: Expected colon'}\x1b[0m`)
     throw SyntaxError('Invalid JSON')
   }
+  return str
 }
 
 export const syntaxCheck4 = value => {
@@ -34,9 +36,10 @@ export const commaCheck = str => {
 }
 export const trailCheck = str => {
   if (str[0] === ',') {
-    space(str) ? (str = space(str)[1]) : str
-    if (str[1] === ']') {
+    space(str.slice(1)) ? (str = space(str.slice(1))[1]) : str
+    if (str[0] === ']') {
       throw Error('Trailing comma')
     }
   }
+  return str
 }
