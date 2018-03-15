@@ -8,8 +8,11 @@ export const array = str => {
   }
   let array = []
   str = str.slice(1)
+  space(str) ? (str = space(str)[1]) : str
   while (str[0] !== ']') {
-    space(str) ? (str = space(str)[1]) : str
+    if (typeof str[0] === 'number' && str[1] === ' ') {
+      throw Error('Expected comma')
+    }
     const factoryOut = valueParser(str)
     factoryOut != null
       ? (array.push(factoryOut[0]),
@@ -18,7 +21,7 @@ export const array = str => {
         space(str) ? (str = space(str)[1]) : str)
       : null
 
-    if (str === ']') return array
+    if (str === ']') return [array, str.slice(1)]
   }
   return [array, str.slice(1)]
 }
