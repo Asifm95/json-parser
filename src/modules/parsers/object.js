@@ -17,6 +17,8 @@ export const object = str => {
   }
   while (str[0] != '}') {
     str.startsWith(' ') && space(str) ? (str = space(str)[1]) : str
+    if (!str.startsWith('"')) throw new Error('Invalid JSON')
+
     let factory
     factory = stringx(str)
     if (factory) {
@@ -24,6 +26,7 @@ export const object = str => {
       if (factory[1]) {
         str = factory[1]
         str.startsWith(' ') && space(str) ? (str = space(str)[1]) : str
+        if (!str.startsWith(':')) throw new Error('Expected colon')
         colon(str) ? (str = colon(str)[1]) : str
         str.startsWith(' ') && space(str) ? (str = space(str)[1]) : str
         let value = valueParser(str)
