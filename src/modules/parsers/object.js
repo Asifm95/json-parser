@@ -24,9 +24,7 @@ export const object = str => {
     let factory
     try {
       factory = stringx(str)
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
     space(str) ? (str = space(str)[1]) : str
     factory[1] = syntaxCheck3(factory[1])
     if (factory) {

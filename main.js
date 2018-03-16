@@ -5,6 +5,10 @@ import { validateRe } from './src/modules/regex/rgx.js'
 console.time()
 const result = valueParser(data)
 console.timeEnd()
+if (result.length !== 2) {
+  console.log(result)
+}
+
 if (result) {
   const test = validateRe.test(result[1])
   test
