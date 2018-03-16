@@ -12,8 +12,8 @@
 
 ### Run
 
-```
-$ npm start
+```Bash
+$npm start
 ```
 
 ### JSON basic overview
@@ -36,7 +36,7 @@ Supported data types.
 
 Value parser takes input from the json and returns the extracted value from factory parser.The return value can be any one of the data types. By checking the forst character of the text, identifies the appropriate parser and returns the value. If no value extracted then each sub parsers will return null.
 
-```
+```JavaScript
 import { data } from './src/modules/fileReader.js'
 import { valueParser } from './src/modules/parsers.js'
 
@@ -49,7 +49,7 @@ The above code shows the initial point of our json parser. The `valueParser` col
 
 The factory parser method is constructed with a for loop and provides all sub parsers. So when the text is passed, the first character of the text will be checked by each parsers. If the input text is null then the factory parser returns null.
 
-```
+```JavaScript
     if (text === null) return null
     for (let i = 0; i < keys.length; i++) {
         out = p[keys[i]](text)
@@ -89,7 +89,7 @@ export const validateRe = /[^ | \n]+$/
 
 Checks if the string contains null value. If value matches then it returns an array with extracts value and remaining text as return.
 
-```
+```JavaScript
 
 str.startsWith('null') ? [null, str.slice(4)]
 
@@ -110,7 +110,7 @@ Number significance
 - Positive or negative numbers
 - Only finite are allowed
 
-```
+```JavaScript
 
 [parseFloat(match[0]), str.slice(match[0].length)]
 
@@ -132,7 +132,7 @@ If the first character matches the requirement, it will check for the regex matc
 
   and return an array conatains the extractes part and the remaining text.
 
-```
+```JavaScript
 
 [stringEnhancer(match[0].slice(1, -1)), str.replace(match[0], '')]
 
@@ -142,7 +142,7 @@ If the first character matches the requirement, it will check for the regex matc
 
 Checks for text starts with `[`.
 
-```
+```JavaScript
 
 if (str != undefined && !str.startsWith('[')) {
     return null
@@ -152,14 +152,15 @@ if (str != undefined && !str.startsWith('[')) {
 
 If contains, then it slices the first character and enters to the while loop which continues till the last character matches closing square bracket.Next it will eliminates the spaces, tabs and new line  till it matches a valid character.
 
-```
+```JavaScript
 
 space(str) ? (str = space(str)[1]) : str
 
 ```
+
 Next checks the syntax. The `commaCheck` is a function that checks if the element is number and if there any space between number,If there it throws a syntax error. Then pass the text to value parser.
 
-```
+```JavaScript
 
 const factoryOut = valueParser(str)
 
@@ -167,7 +168,7 @@ const factoryOut = valueParser(str)
 
  Now the array parser will be in the call stack and go for the value parser. When the valid value returns it updates the string and push the extracted value from the value parser.After that will be a `trailCheck`.Then the comma and space parsers helps to extract the next array element.
 
- ```
+ ```JavaScript
 
  array.push(factoryOut[0])
  str = factoryOut[1]
@@ -176,7 +177,7 @@ const factoryOut = valueParser(str)
 
 After a synatax validation it exits the array parser and returns the value.
 
-```
+```JavaScript
 
 return [array, str.slice(1)]
 
@@ -186,7 +187,7 @@ return [array, str.slice(1)]
 
 Object parser identifies object and it's key, values from the JSON. Like the same in array parser it checks for the first character.
 
-```
+```JavaScript
 
 if (str[0] !== '{') return null
 
@@ -194,7 +195,7 @@ if (str[0] !== '{') return null
 
  If it's valid a object it slices the first character and moves to the while condition.The loop will continues untill it reaches the end of object. ie, `}` character.
 
- ```
+ ```JavaScript
 
  while (str[0] != '}')
 
@@ -202,7 +203,7 @@ if (str[0] !== '{') return null
 
 The parser contain multiple syntax checks and it if fails then throws an error message.
 
-```
+```JavaScript
 
 try {
       factory = stringx(str)
@@ -211,18 +212,20 @@ try {
     }
 
 ```
+
 The try...catch conatins string parser statement in try block, and specifies a response, should an exception be thrown if one of the parsers fail. This makes exception handling more easier.
 
 After extracting the key as the string, then after a syntax check it updates the `factory` variable. Then space parcer will remove the spaces and then the colon parser checks for colon and then the remaining part will be passed to a value parser.
 
-```
+```JavaScript
 
 colon(str) ? (str = colon(str)[1]) : str
 
 ```
+
 If value found it will updates the `object` property (Already initialized with an empty object) with the key from the `stringParser` and the value from the `valueParser`.
 
-```
+```JavaScript
 
 let value = valueParser(str)
 object[key] = value[0]
@@ -232,7 +235,7 @@ str = value[1]
 
 ### Folder Strucuture
 
-```
+```JavaScript
 
 ├── main.js  (Initial hit)
 ├── package.json
