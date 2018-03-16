@@ -15,3 +15,4 @@ export const regexTable = {
 }
 export const serializeRe = /\s(?=("[^"]*"|[^"])*$)/gm
 export const validateRe = /[^ | \n]+$/
+export const isValidNum = /^-?(0|[1-9]\d*|(?=\.))(\.\d+)?$/

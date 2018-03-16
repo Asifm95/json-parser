@@ -1,4 +1,4 @@
-import { commaErrRe } from '../regex/rgx.js'
+import { commaErrRe, isValidNum } from '../regex/rgx.js'
 import { space } from '../parsers/space.js'
 
 export const syntaxCheck1 = str => {
@@ -44,4 +44,18 @@ export const trailCheck = str => {
     }
   }
   return str
+}
+export const numValidCheck = num => {
+  if (!isValidNum.test(num)) {
+    let message = `Message: '${num} 'is not a valid number.`
+    console.log(`\x1b[31m${message}\x1b[0m`)
+    throw SyntaxError('Invalid JSON')
+  }
+}
+export const numSyntaxCheck = str => {
+  if (str.startsWith('.')) {
+    let message = `Message: Value expected before dot`
+    console.log(`\x1b[31m${message}\x1b[0m`)
+    throw SyntaxError('Invalid JSON')
+  }
 }
