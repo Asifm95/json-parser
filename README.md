@@ -89,7 +89,9 @@ export const validateRe = /[^ | \n]+$/
 Checks if the string contains null value. If value matches then it returns an array with extracts value and remaining text as return.
 
 ```
+
 str.startsWith('null') ? [null, str.slice(4)]
+
 ```
 
 ### Boolean parser
@@ -108,17 +110,80 @@ Number significance
 - Only finite are allowed
 
 ```
+
 [parseFloat(match[0]), str.slice(match[0].length)]
+
 ```
+
 ### String parser
 
 Extracts valid string from the text.
+If the string does not contain double quotes as first character it will return null.
+If the first character matches the requirement, it will check for the regex match.This will extract the valid string from the text.If match found then calls the `stringEnhancer` method. It will look in the regex table for line feeds, etc.
+`
+ '/\\\\/': '\\',
+  '/\\//': '/',
+  '/\\b/': '\b',
+  '/\\f/': '\f',
+  '/\\n/': '\n',
+  '/\\r/': '\r',
+  '/\\t/': '\t'` 
+  
+  and return an array conatains the extractes part and the remaining text.
+
+```
+
+[stringEnhancer(match[0].slice(1, -1)), str.replace(match[0], '')]
+
+```
 
 ### Array parser
+Checks for text starts with `[`.
+
+```
+
+if (str != undefined && !str.startsWith('[')) {
+    return null
+  }
+
+```
+
+If contains, then it slices the first character and enters to the while loop which continues till the last character matches closing square bracket.Next it will eliminates the spaces, tabs and new line  till it matches a valid character.
+
+```
+
+space(str) ? (str = space(str)[1]) : str
+
+```
+Next checks the syntax. The `commaCheck` is a function that checks if the element is number and if there any space between number,If there it throws a syntax error. Then pass the text to value parser.
+
+```
+
+const factoryOut = valueParser(str)
+
+```
+
+ Now the array parser will be in the call stack and go for the value parser. When the valid value returns it updates the string and push the extracted value from the value parser.After that will be a `trailCheck`.Then the comma and space parsers helps to extract the next array element.
+ 
+ ```
+
+ array.push(factoryOut[0])
+ str = factoryOut[1]
+
+ ```
+
+After a synatx validation it exits the array parser and returns the value.
+
+```
+
+return [array, str.slice(1)]
+
+```
 
 ### Object parser
 
 ### Folder Strucuture
+
 ```
 
 ├── main.js  (Initial hit)
