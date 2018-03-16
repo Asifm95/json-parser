@@ -233,6 +233,48 @@ str = value[1]
 
 ```
 
+### Exception handling
+
+If the input contains invalid JSON structure, then the exception handlers will get invoked.
+
+#### Exception type: Expected colon
+
+Input
+
+```Javascript
+{
+  "aliceblue": "#f0f8ff",
+}
+```
+
+![error](/src/assets/images/error1.gif )
+
+#### Exception type: Must contain value after colon
+
+Input
+
+```Javascript
+{
+  "aliceblue":
+}
+```
+
+![error2](/src/assets/images/error2.gif )
+
+
+#### Exception type: Property expected
+
+Input
+
+```Javascript
+{
+  "aliceblue": "#f0f8ff",
+}
+```
+
+![error3](/src/assets/images/error3.gif )
+
+
 ### Folder Strucuture
 
 ```JavaScript
