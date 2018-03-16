@@ -59,11 +59,12 @@ The factory parser method is constructed with a for loop and provides all sub pa
 ```
 
 Then the next order of movement will be like `null`, `boolean`, `number` , `string`, `array`, `object`.
+
 ### Regex patterns
 
 Sub parsers use regular expression for the extraction of value from the text.
 
-```
+```Javascript
 export const colonRe = /^:/
 export const commaRe = /^,/
 export const numRe = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/
@@ -127,8 +128,8 @@ If the first character matches the requirement, it will check for the regex matc
   '/\\f/': '\f',
   '/\\n/': '\n',
   '/\\r/': '\r',
-  '/\\t/': '\t'` 
-  
+  '/\\t/': '\t'`
+
   and return an array conatains the extractes part and the remaining text.
 
 ```
@@ -138,6 +139,7 @@ If the first character matches the requirement, it will check for the regex matc
 ```
 
 ### Array parser
+
 Checks for text starts with `[`.
 
 ```
@@ -164,7 +166,7 @@ const factoryOut = valueParser(str)
 ```
 
  Now the array parser will be in the call stack and go for the value parser. When the valid value returns it updates the string and push the extracted value from the value parser.After that will be a `trailCheck`.Then the comma and space parsers helps to extract the next array element.
- 
+
  ```
 
  array.push(factoryOut[0])
@@ -172,7 +174,7 @@ const factoryOut = valueParser(str)
 
  ```
 
-After a synatx validation it exits the array parser and returns the value.
+After a synatax validation it exits the array parser and returns the value.
 
 ```
 
@@ -181,6 +183,52 @@ return [array, str.slice(1)]
 ```
 
 ### Object parser
+
+Object parser identifies object and it's key, values from the JSON. Like the same in array parser it checks for the first character.
+
+```
+
+if (str[0] !== '{') return null
+
+```
+
+ If it's valid a object it slices the first character and moves to the while condition.The loop will continues untill it reaches the end of object. ie, `}` character.
+
+ ```
+
+ while (str[0] != '}')
+
+ ```
+
+The parser contain multiple syntax checks and it if fails then throws an error message.
+
+```
+
+try {
+      factory = stringx(str)
+    } catch (error) {
+      console.log(error)
+    }
+
+```
+The try...catch conatins string parser statement in try block, and specifies a response, should an exception be thrown if one of the parsers fail. This makes exception handling more easier.
+
+After extracting the key as the string, then after a syntax check it updates the `factory` variable. Then space parcer will remove the spaces and then the colon parser checks for colon and then the remaining part will be passed to a value parser.
+
+```
+
+colon(str) ? (str = colon(str)[1]) : str
+
+```
+If value found it will updates the `object` property (Already initialized with an empty object) with the key from the `stringParser` and the value from the `valueParser`.
+
+```
+
+let value = valueParser(str)
+object[key] = value[0]
+str = value[1]
+
+```
 
 ### Folder Strucuture
 
