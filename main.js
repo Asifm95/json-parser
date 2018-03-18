@@ -1,3 +1,6 @@
+// import { contents } from './src/modules/fileReader.js'
+// import { parsers, valueParser } from './src/modules/parsers.js'
+
 let fs = require('fs')
 let contents = fs.readFileSync('input.json', 'utf8')
 
